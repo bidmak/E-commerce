@@ -1,0 +1,84 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<aside class="act_sec_1" >
+    <div class="act_list">
+        <h2>Active Listings</h2>
+        <div>
+            <form action="{% url 'auctions:index' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <br>
+                    <label for="category" style="font-size: 15px;">Choose a category:</label>
+                    <select name="category" id="category" class="form-select bg-light" aria-label="Default select example" onchange="this.form.submit()">
+                        <option value="select" style="font-size: 15px;">Select category</option>
+                        <option value="all" style="font-size: 15px;">All</option>
+                        {% for category in categories %}
+                            <option value="{{ category }}" style="font-size: 15px;">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div>
+            <form action="{% url 'auctions:index' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <br>
+                    <label for="search" style="font-size: 15px;">Search for an item:</label>
+                    <br>
+                    <input type="text" name="search" class="form-control bg-light" placeholder="Enter item title" style="font-size: 15px;" >
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="primary_button">Search</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    <div class="vertical-line"></div>
+</aside> 
+
+<div class="scrollable">
+    <section class="act_sec_2">
+        {% if message %}
+            <div class="d-flex justify-content-center">
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" style="width: 80%;">
+                    <strong>{{ search }}</strong> not found, please search for another item.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+            
+        {% endif %}
+        <div class="row mx-2 ">
+            {% for listing in listings %}
+            <div class="card my-2 mx-2 p-2" style="width: 14rem;">
+                <a href="{% url 'auctions:listing' id=listing.id %}" class="card_link" style="text-decoration: none; color:rgba(0, 0, 0, 0.75);">
+                <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="240">
+                <div class="card-body px-0 py-2">
+                  <h5 class="card-title mb-1 fw-semibold" style="font-size: 18px;">{{ listing.title|truncatechars:19 }}</h5>
+                  <p class="card-text mb-1" style="font-size: 15px;">{{ listing.description|truncatechars:46 }}</p>
+                  <p class="card-text mb-0 fw-semibold" style="font-size: 16px;">£{{ listing.bid.price|floatformat:2 }}</p>
+                  
+                </div>
+                </a>
+              </div>
+            {% empty %}
+                {% if current_category == "select" %}
+                    <div class="d-flex justify-content-center">
+                        <div class="alert alert-light text-center" role="alert" style="width: 50%;">
+                            No currently available listings.
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="d-flex justify-content-center">
+                        <div class="alert alert-light text-center" role="alert" style="width: 50%;">
+                            No available listings for "<strong>{{current_category}}</strong>".
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

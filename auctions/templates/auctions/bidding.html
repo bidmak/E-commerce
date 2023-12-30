@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<aside class="act_sec_1">
+    <div class="act_list">
+        <h2>Your biddding lists</h2>
+    </div>
+    <div class="vertical-line"></div>
+</aside> 
+
+<div class="scrollable">
+    <section class="act_sec_2">
+        <div class="row mx-2 ">
+            {% for listing in listings %}
+                {% if not listing.isActive and user == listing.bid.user %}
+                    <div class="card my-2 mx-2 p-2" style="width: 14rem;">
+                        <a href="{% url 'auctions:listing' id=listing.id %}" class="card_link" style="text-decoration: none; color:rgba(0, 0, 0, 0.75);">
+                            <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="240">
+                            <div class="card-body px-0 py-2">
+                                <h5 class="card-title mb-1 fw-semibold" style="font-size: 18px;">{{ listing.title|truncatechars:19 }}</h5>
+                                <p class="card-text mb-1" style="font-size: 15px;">{{ listing.description|truncatechars:46 }}</p>
+                                <p class="card-text mb-0 fw-semibold" style="font-size: 16px; color: green;">You won this Auction</p>
+                            </div>
+                        </a>
+                    </div>
+                {% elif not listing.isActive and user != listing.bid.user %}
+                    <div class="card my-2 mx-2 p-2" style="width: 14rem;">
+                        <a href="{% url 'auctions:listing' id=listing.id %}" class="card_link" style="text-decoration: none; color:rgba(0, 0, 0, 0.75);">
+                            <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="240">
+                            <div class="card-body px-0 py-2">
+                                <h5 class="card-title mb-1 fw-semibold" style="font-size: 18px;">{{ listing.title|truncatechars:19 }}</h5>
+                                <p class="card-text mb-1" style="font-size: 15px;">{{ listing.description|truncatechars:46 }}</p>
+                                <p class="card-text mb-0 fw-semibold" style="font-size: 16px; color: red;">Auction closed</p>
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="card my-2 mx-2 p-2" style="width: 14rem;">
+                        <a href="{% url 'auctions:listing' id=listing.id %}" class="card_link" style="text-decoration: none; color:rgba(0, 0, 0, 0.75);">
+                            <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="240">
+                            <div class="card-body px-0 py-2">
+                                <h5 class="card-title mb-1 fw-semibold" style="font-size: 18px;">{{ listing.title|truncatechars:19 }}</h5>
+                                <p class="card-text mb-1" style="font-size: 15px;">{{ listing.description|truncatechars:46 }}</p>
+                                <p class="card-text mb-0 fw-semibold" style="font-size: 16px;">£{{ listing.bid.price|floatformat:2 }}</p>
+                                
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% empty %}
+                <div class="d-flex justify-content-center">
+                    <div class="alert alert-light text-center" role="alert" style="width: 50%;">
+                        Your bidding list is empty.
+                    </div>
+                </div>                
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+{% endblock %}

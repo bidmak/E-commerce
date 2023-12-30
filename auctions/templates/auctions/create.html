@@ -1,0 +1,65 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<aside class="act_sec_1" >
+    <div class="act_list">
+        <h2>Create New Listings</h2>
+    </div>
+    <div class="vertical-line"></div>
+</aside> 
+
+<div class="scrollable">
+    <section class="act_sec_2">
+        <div class="create_container">
+            {% if message %}
+                <div class="d-flex justify-content-center">
+                    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" style="width: 80%;">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endif %}
+            <form action="{% url 'auctions:create' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Listing Title</label>
+                    <input type="text" name="title" class="form-control" maxlength="30">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Enter Description</label>
+                    <input type="text" name="description" class="form-control" maxlength="500">
+                </div>
+                <div class="mb-3">
+                    <label for="imageurl" class="form-label">Enter Image Url</label>
+                    <input type="text"name="imageurl" class="form-control" maxlength="1000">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Enter Price</label>
+                    <input type="number" name="price" class="form-control"  step="0.01">
+                </div>
+                <div class="mb-3" id="cat_input">
+                    <div class="new_cat_select">
+                        <label for="new_category" class="form-label">Enter a new Category</label>
+                        <input type="text" name="new_category" class="form-control" maxlength="30">
+                    </div>
+                    <div style="padding-bottom: 6px;">
+                        Or
+                    </div>
+                    <div class="cat_select">
+                        <select name="category" placeholder="category" class="form-select" aria-label="Default select example">
+                            <option value="select" selected>Select from existing category</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="but_div" >
+                    <button type="submit" class="primary_button mb2">Create</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

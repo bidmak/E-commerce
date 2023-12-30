@@ -1,0 +1,33 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <section class="login_section">
+        <div class="login-container">
+            {% if message %}
+                <div class="alert alert-danger alert-dismissible fade show " role="alert" style="width: 100%;">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <div class="text-center">
+                <p>Sign in or <a href="{% url 'auctions:register' %}">create and account</a></p>
+            </div>
+            <br>
+            <form action="{% url 'auctions:login' %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input autofocus class="form-control" type="text" name="username" placeholder="Username">
+                </div>
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <input class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+                <div class="but_div">
+                    <button class="primary_button" type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+        
+    </section>
+{% endblock %}
