@@ -1,84 +1,116 @@
 {% extends "auctions/layout.html" %}
 
-{% block body %}
-<aside class="act_sec_1" >
-    <div class="act_list">
-        <h2>Active Listings</h2>
-        <div>
-            <form action="{% url 'auctions:index' %}" method="POST">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <br>
-                    <label for="category" style="font-size: 15px;">Choose a category:</label>
-                    <select name="category" id="category" class="form-select bg-light" aria-label="Default select example" onchange="this.form.submit()">
-                        <option value="select" style="font-size: 15px;">Select category</option>
-                        <option value="all" style="font-size: 15px;">All</option>
-                        {% for category in categories %}
-                            <option value="{{ category }}" style="font-size: 15px;">{{ category }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </form>
-        </div>
-        <div>
-            <form action="{% url 'auctions:index' %}" method="POST">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <br>
-                    <label for="search" style="font-size: 15px;">Search for an item:</label>
-                    <br>
-                    <input type="text" name="search" class="form-control bg-light" placeholder="Enter item title" style="font-size: 15px;" >
-                </div>
-                <div class="text-end">
-                    <button type="submit" class="primary_button">Search</button>
-                </div>
-                
-            </form>
-        </div>
+{% block search %}
+<div class="flex space-x-4 items-center">
+    <div class="bg-neutral-50 rounded px-4 text-neutral-900 text-sm h-max">
+        <form action="{% url 'auctions:index' %}" method="POST">
+            {% csrf_token %}
+            <input type="text" name="search" class="outline-none rounded-none w-[300px] py-2 "
+                placeholder="Search for an item">
+            <button type="submit" class="primary_button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
     </div>
-    <div class="vertical-line"></div>
-</aside> 
+    <div class="text-sm">
+        <form action="{% url 'auctions:index' %}" method="POST">
+            {% csrf_token %}
+            <div id="find-category" class=" cursor-pointer py-2">
+                <span class="" for="category">Find category</span>
+                <i id="arrow" class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div id="search" class="hidden absolute bg-white text-sm text-neutral-900 border px-3 min-w-[120px]">
+                <div class="grid grid-cols-1 divide-y">
+                    <button style="text-align: start;" class="py-1.5 w-full" type="submit" name="category" value="all">
+                        All
+                    </button>
+                    {% for category in categories %}
+                    <button style="text-align: start;" class="py-1.5 w-full" type="submit" name="category"
+                        value="{{ category }}">
+                        {{ category }}
+                    </button>
+                    {% endfor %}
+                </div>
 
-<div class="scrollable">
-    <section class="act_sec_2">
-        {% if message %}
-            <div class="d-flex justify-content-center">
-                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert" style="width: 80%;">
-                    <strong>{{ search }}</strong> not found, please search for another item.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<section id="index">
+    <div class="w-full bg-cover bg-center h-[340px] "
+        style="background-image: url('./../../static/assets/banner.jpeg');">
+        <div
+            class="bg-gradient-to-r from-neutral-800 from-30% to-transparent to-80% h-full w-full ps-[40px] flex items-center">
+            <div class="container px-10 mx-auto">
+                <div class="max-w-[400px] space-y-4">
+                    <h2 class="text-[52px] font-bold text-neutral-50">Uncover hidden treasures</h2>
+                    <div
+                        class="group cursor-pointer w-max text-center text-neutral-900 bg-neutral-50 px-[70px] py-[12px]">
+                        <button
+                            class="text-[18px] font-medium group-hover:underline underline-offset-2 decoration-neutral-900 "
+                            href="#">View all auctions</button>
+                    </div>
                 </div>
             </div>
-            
-        {% endif %}
-        <div class="row mx-2 ">
-            {% for listing in listings %}
-            <div class="card my-2 mx-2 p-2" style="width: 14rem;">
-                <a href="{% url 'auctions:listing' id=listing.id %}" class="card_link" style="text-decoration: none; color:rgba(0, 0, 0, 0.75);">
-                <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="240">
-                <div class="card-body px-0 py-2">
-                  <h5 class="card-title mb-1 fw-semibold" style="font-size: 18px;">{{ listing.title|truncatechars:19 }}</h5>
-                  <p class="card-text mb-1" style="font-size: 15px;">{{ listing.description|truncatechars:46 }}</p>
-                  <p class="card-text mb-0 fw-semibold" style="font-size: 16px;">£{{ listing.bid.price|floatformat:2 }}</p>
-                  
-                </div>
-                </a>
-              </div>
-            {% empty %}
-                {% if current_category == "select" %}
-                    <div class="d-flex justify-content-center">
-                        <div class="alert alert-light text-center" role="alert" style="width: 50%;">
-                            No currently available listings.
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="d-flex justify-content-center">
-                        <div class="alert alert-light text-center" role="alert" style="width: 50%;">
-                            No available listings for "<strong>{{current_category}}</strong>".
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
         </div>
-    </section>
-</div>
+    </div>
+
+    <div class="py-[40px] bg-gray-50">
+        <div class="container px-10 mx-auto">
+            {% if message %}
+            <div id="message" class="flex items-center justify-center border-b">
+                <div class="py-2 flex items-center space-x-14">
+                    <div>
+                        <h3 class="font-medium ">
+                            No matches found
+                        </h3>
+                        <span class="text-[15px]">We could not find what you were looking for. Please try a
+                            different
+                            search.</span>
+                    </div>
+                    <div id="message-close" class="text-3xl text-neutral-400 hover:text-neutral-900">
+                        <i class="fa-regular fa-rectangle-xmark"></i>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+            <div class="grid grid-cols-4 gap-4 ">
+                {% for listing in listings %}
+                <div class="bg-white ">
+                    <a href="{% url 'auctions:listing' id=listing.id %}" class="" style="text-decoration: none; ">
+                        <img src="{{ listing.imageUrl }}" class="card-img-top" alt="{{ listing.title }}" height="220">
+                        <div class="space-y-2 px-2 py-4">
+                            <h5 class="text-[20px] font-semibold">
+                                {{ listing.title|truncatechars:19 }}</h5>
+                            <p class="leading-[18px] text-[15px]">
+                                {{ listing.description|truncatechars:46 }}
+                            </p>
+                            <p class="card-text fw-semibold text-[15px]">
+                                £ {{ listing.bid.price|floatformat:2 }}</p>
+
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                {% if current_category == "select" %}
+                <div class="d-flex justify-content-center">
+                    <div class="alert alert-light text-center" role="alert" style="width: 50%;">
+                        No currently available listings.
+                    </div>
+                </div>
+                {% else %}
+                <div class="d-flex justify-content-center">
+                    <div class="alert alert-light text-center" role="alert" style="width: 50%;">
+                        No available listings for "<strong>{{current_category}}</strong>".
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
 {% endblock %}

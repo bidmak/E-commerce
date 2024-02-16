@@ -1,0 +1,8 @@
+# Ignore .DS_Store files created by macOS
+.DS_Store
+
+# Ignore SQLite database file
+db.sqlite3
+
+# Ignore cache file
+__pycache__
